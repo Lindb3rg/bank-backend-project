@@ -1,24 +1,36 @@
-version: "2"
-cloud:
-    organization: ""
-    project: ""
-    hostname: ""
-servers: []
-sql:
-  - engine: "postgresql"
+version: "1"
+packages:
+  - name: "sqlc"
+    path: "./db/sqlc"
     queries: "./db/query"
     schema: "./db/migration"
-    gen:
-        go:
-            package: "sqlc"
-            out: "./db/sqlc"
-            sql_package: "pgx/v5"
-            emit_json_tags: true
-            emit_prepared_queries: false
-            emit_interface: false
-            emit_exact_table_names: false
-overrides:
-    go: null
-plugins: []
-rules: []
-options: {}
+    engine: "postgresql"
+    emit_json_tags: true
+    emit_prepared_queries: true
+    emit_interface: false
+    emit_exact_table_names: false
+
+# version: "2"
+# cloud:
+#     organization: ""
+#     project: ""
+#     hostname: ""
+# servers: []
+# sql:
+#   - engine: "postgresql"
+#     queries: "./db/query"
+#     schema: "./db/migration"
+#     gen:
+#         go:
+#             package: "sqlc"
+#             out: "./db/sqlc"
+#             sql_package: "pgx/v5"
+#             emit_json_tags: true
+#             emit_prepared_queries: false
+#             emit_interface: false
+#             emit_exact_table_names: false
+# overrides:
+#     go: null
+# plugins: []
+# rules: []
+# options: {}

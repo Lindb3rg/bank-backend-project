@@ -14,7 +14,7 @@ WHERE
 LIMIT
   1;
 
--- name: ListAccount :many
+-- name: ListAccounts :many
 SELECT
   *
 FROM
