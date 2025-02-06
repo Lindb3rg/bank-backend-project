@@ -131,13 +131,23 @@ func TestTransferTxDeadlock(t *testing.T) {
 	errs := make(chan error)
 
 	for i := 0; i < n; i++ {
+		fmt.Println(i + 1)
+		fromAccount := account1.ID
+		toAccount := account2.ID
+
+		if i%2 == 1 {
+
+			fromAccount = account2.ID
+			toAccount = account1.ID
+
+		}
 
 		go func() {
 
 			_, err := testStore.TransferTx(context.Background(), TransferTxParams{
 
-				FromAccountID: account1.ID,
-				ToAccountID:   account2.ID,
+				FromAccountID: fromAccount,
+				ToAccountID:   toAccount,
 				Amount:        amount,
 			})
 
