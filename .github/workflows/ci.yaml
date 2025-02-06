@@ -9,17 +9,22 @@ on:
 jobs:
 
   test:
+    # Running on Linux server
     runs-on: ubuntu-latest
 
+    # Setting up a postgres service
     services:
+      # Setting up postgres docker image
       postgres:
         image: postgres:15-alpine
         env:
+          # Environment vars for db
           POSTGRES_PASSWORD: secret
           POSTGRES_USER: root
           POSTGRES_DB: simple_bank
         
         ports:
+          # Map to correct port
           - 5432:5432
 
         options: >-
@@ -32,7 +37,7 @@ jobs:
     - uses: actions/checkout@v4
     
     
-
+      # Setting up Go!
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
@@ -42,14 +47,22 @@ jobs:
     - name: Check out code intothe Go module directory
       uses: actions/checkout@v2
     
+      # Installing golang-migrate CLI
+      # Downloading zip-file
+      # Moving file to the directory so it can be detected
+      # Showing what migration version
     - name: Install golang-migrate
       run: | 
+        
         curl -L https://github.com/golang-migrate/migrate/releases/download/v4.18.2/migrate.linux-amd64.tar.gz | tar xvz
         sudo mv migrate /usr/bin/migrate
         which migrate
-    
+      
+      # Running make command for migrate up
     - name: Run migrations
       run: make migrateup
+    
 
+      # Running make command for start tests
     - name: Test
       run: make test
