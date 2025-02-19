@@ -30,7 +30,7 @@ type Config struct {
 // LoadConfig reads configuration from file or environment variables.
 func LoadConfig(path string) (config Config, err error) {
 	// Check if we are in production mode
-	appEnv := os.Getenv("APP_ENV")
+	appEnv := os.Getenv("DB_CONNECTION")
 
 	if appEnv != "production" {
 		// Load from app.env in development
