@@ -3,6 +3,7 @@ package api
 import (
 	db "bank-backend-project/db/sqlc"
 	"bank-backend-project/utils"
+	"log"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
@@ -33,6 +34,10 @@ func NewServer(config utils.Config, store db.Store) (*Server, error) {
 
 func (server *Server) setupRouter() {
 	router := gin.Default()
+	err := router.SetTrustedProxies(server.config.TrustedProxies)
+	if err != nil {
+		log.Fatal("Could not establish proxy connection: ", errorResponse(err))
+	}
 
 	router.POST("/accounts", server.createAccount)
 	router.GET("/accounts/:id", server.getAccount)

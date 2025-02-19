@@ -12,9 +12,10 @@ import (
 
 func main() {
 
-	config, err := utils.LoadConfig("../..")
+	config, err := utils.LoadConfig(".")
+
 	if err != nil {
-		log.Fatal("cannot load config:", err)
+		log.Fatal("cannot load config: ", err)
 	}
 
 	connPool, err := pgxpool.New(context.Background(), config.DBSource)
@@ -24,6 +25,13 @@ func main() {
 
 	store := db.NewStore(connPool)
 	server, err := api.NewServer(config, store)
+	if err != nil {
+		log.Fatal("Could not set up new server and routing: ", err)
+	}
+
 	err = server.Start(config.HTTPServerAddress)
+	if err != nil {
+		log.Fatal("Cannot start server: ", err)
+	}
 
 }
