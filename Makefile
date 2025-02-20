@@ -1,5 +1,7 @@
-include .env
-export $(shell sed 's/=.*//' .env)
+ifneq ("$(wildcard .env)", "")
+    include .env
+    export $(shell sed 's/=.*//' .env)
+endif
 
 postgres:
 	docker run --name postgres12 -p 5432:5432 \
