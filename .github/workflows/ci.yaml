@@ -36,7 +36,11 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    
+    - name: Debug Secrets
+      run: echo "POSTGRES_PASSWORD is set"
+      if: env.POSTGRES_PASSWORD != ''
+      env:
+        POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       # Setting up Go!
     - name: Set up Go
       uses: actions/setup-go@v4
@@ -57,11 +61,7 @@ jobs:
         curl -L https://github.com/golang-migrate/migrate/releases/download/v4.18.2/migrate.linux-amd64.tar.gz | tar xvz
         sudo mv migrate /usr/bin/migrate
         which migrate
-    - name: Debug Secrets
-      run: echo "POSTGRES_PASSWORD is set"
-      if: env.POSTGRES_PASSWORD != ''
-      env:
-        POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+    
     
        # Running make command for migrate up
     - name: Run migrations for actions
