@@ -19,9 +19,9 @@ jobs:
         env:
           # Environment vars for db
           ENVIRONMENT: ${{ env.ENVIRONMENT }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+          POSTGRES_USER: ${{ secrets.GITHUB_TOKEN }}
+          POSTGRES_DB: ${{ secrets.GITHUB_TOKEN }}
         image: postgres:15-alpine
         ports:
           # Map to correct port
@@ -36,11 +36,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Debug Secrets
-      run: echo "POSTGRES_PASSWORD is set"
-      if: env.POSTGRES_PASSWORD != ''
-      env:
-        POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+
       # Setting up Go!
     - name: Set up Go
       uses: actions/setup-go@v4
@@ -65,8 +61,6 @@ jobs:
     
        # Running make command for migrate up
     - name: Run migrations for actions
-      env:
-        POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       run: make migrateup
     
 
