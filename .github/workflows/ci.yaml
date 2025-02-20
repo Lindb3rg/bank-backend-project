@@ -61,6 +61,12 @@ jobs:
     
        # Running make command for migrate up
     - name: Run migrations for actions
+      env:
+          # Environment vars for db
+          ENVIRONMENT: ${{ env.ENVIRONMENT }}
+          POSTGRES_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+          POSTGRES_USER: ${{ secrets.GITHUB_TOKEN }}
+          POSTGRES_DB: ${{ secrets.GITHUB_TOKEN }}
       run: make migrateup
     
 
