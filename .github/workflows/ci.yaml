@@ -72,4 +72,10 @@ jobs:
 
       # Running make command for start tests
     - name: Test
+      env:
+          # Environment vars for db
+          ENVIRONMENT: ${{ env.ENVIRONMENT }}
+          POSTGRES_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+          POSTGRES_USER: ${{ secrets.GITHUB_TOKEN }}
+          POSTGRES_DB: ${{ secrets.GITHUB_TOKEN }}
       run: make test
