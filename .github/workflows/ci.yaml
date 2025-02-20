@@ -57,8 +57,11 @@ jobs:
         sudo mv migrate /usr/bin/migrate
         which migrate
       
-      # Running make command for migrate up
-    - name: Run migrations
+    
+       # Running make command for migrate up
+    - name: Run migrations for actions
+      env:
+        POSTGRES_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
       run: make migrateup
     
 
