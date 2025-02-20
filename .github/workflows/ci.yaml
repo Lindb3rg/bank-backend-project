@@ -18,9 +18,9 @@ jobs:
       postgres:
         env:
           # Environment vars for db
-          POSTGRES_PASSWORD: ${{ secrets.DB_CONNECTION }}
-          POSTGRES_USER: ${{ secrets.DB_CONNECTION }}
-          POSTGRES_DB: ${{ secrets.DB_CONNECTION }}
+          POSTGRES_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+          POSTGRES_USER: ${{ secrets.GITHUB_TOKEN }}
+          POSTGRES_DB: ${{ secrets.GITHUB_TOKEN }}
         image: postgres:15-alpine
         ports:
           # Map to correct port
