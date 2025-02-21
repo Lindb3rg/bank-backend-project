@@ -16,6 +16,10 @@ jobs:
     services:
       # Setting up postgres docker image
       postgres:
+        env:
+          POSTGRES_USER: root
+          POSTGRES_PASSWORD: secret
+          POSTGRES_DB: simple_bank
         image: postgres:15-alpine
         ports:
           # Map to correct port
