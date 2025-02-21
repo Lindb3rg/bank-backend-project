@@ -1,8 +1,6 @@
 package utils
 
 import (
-	"log"
-	"os"
 	"time"
 
 	"github.com/spf13/viper"
@@ -29,25 +27,16 @@ type Config struct {
 
 // LoadConfig reads configuration from file or environment variables.
 func LoadConfig(path string) (config Config, err error) {
-	// Check if we are in production mode
-	appEnv := os.Getenv("DB_CONNECTION")
-
-	if appEnv != "production" {
-		// Load from app.env in development
-		viper.AddConfigPath(path)
-		viper.SetConfigName("app")
-		viper.SetConfigType("env")
-
-		// Read from app.env file
-		if err = viper.ReadInConfig(); err != nil {
-			log.Println("⚠️ No app.env file found, using system environment variables instead.")
-		}
-	}
-
-	// Load environment variables (this will override any app.env values if they exist)
+	viper.AddConfigPath(path)
+	viper.SetConfigName("app")
+	viper.SetConfigType("env")
 	viper.AutomaticEnv()
 
-	// Unmarshal into Config struct
+	err = viper.ReadInConfig()
+	if err != nil {
+		return
+	}
+
 	err = viper.Unmarshal(&config)
 	return
 }
