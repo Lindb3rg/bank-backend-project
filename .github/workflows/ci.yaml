@@ -16,12 +16,6 @@ jobs:
     services:
       # Setting up postgres docker image
       postgres:
-        env:
-          # Environment vars for db
-          ENVIRONMENT: ${{ env.ENVIRONMENT }}
-          POSTGRES_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-          POSTGRES_USER: ${{ secrets.GITHUB_TOKEN }}
-          POSTGRES_DB: ${{ secrets.GITHUB_TOKEN }}
         image: postgres:15-alpine
         ports:
           # Map to correct port
@@ -61,21 +55,9 @@ jobs:
     
        # Running make command for migrate up
     - name: Run migrations for actions
-      env:
-          # Environment vars for db
-          ENVIRONMENT: ${{ env.ENVIRONMENT }}
-          POSTGRES_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-          POSTGRES_USER: ${{ secrets.GITHUB_TOKEN }}
-          POSTGRES_DB: ${{ secrets.GITHUB_TOKEN }}
       run: make migrateup
     
 
       # Running make command for start tests
     - name: Test
-      env:
-          # Environment vars for db
-          ENVIRONMENT: ${{ env.ENVIRONMENT }}
-          POSTGRES_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-          POSTGRES_USER: ${{ secrets.GITHUB_TOKEN }}
-          POSTGRES_DB: ${{ secrets.GITHUB_TOKEN }}
       run: make test

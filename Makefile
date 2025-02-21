@@ -1,25 +1,21 @@
-ifneq ("$(wildcard .env)", "")
-    include .env
-    export $(shell sed 's/=.*//' .env)
-endif
 
 postgres:
 	docker run --name postgres12 -p 5432:5432 \
-		-e POSTGRES_PASSWORD=$(POSTGRES_PASSWORD) \
-		-e POSTGRES_USER=$(POSTGRES_USER) \
+		-e POSTGRES_PASSWORD=secret \
+		-e POSTGRES_USER=root \
 		-d postgres:15-alpine
 
 createdb:
-	docker exec -it postgres12 createdb --username=$(POSTGRES_USER) --owner=$(POSTGRES_USER) simple_bank
+	docker exec -it postgres12 createdb --username=root --owner=root simple_bank
 
 dropdb:
 	docker exec -it postgres12 dropdb simple_bank
 
 migrateup:
-	migrate -path db/migration -database "postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@localhost:5432/$(POSTGRES_DB)?sslmode=disable" -verbose up
+	migrate -path db/migration -database "postgres://root:secret@localhost:5432/simple_bank?sslmode=disable" -verbose up
 
 migratedown:
-	migrate -path db/migration -database "postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@localhost:5432/$(POSTGRES_DB)?sslmode=disable" -verbose down
+	migrate -path db/migration -database "postgres://root:secret@localhost:5432/simple_bank?sslmode=disable" -verbose down
 
 sqlc:
 	sqlc generate
