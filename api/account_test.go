@@ -262,10 +262,12 @@ func TestListAccountAPI(t *testing.T) {
 	}
 
 	testCases := []struct {
-		name          string
-		query         Query
-		buildStubs    func(store *mockdb.MockStore)
-		checkResponse func(recoder *httptest.ResponseRecorder)
+		name                string
+		query               Query
+		body                gin.H
+		buildStubs          func(store *mockdb.MockStore)
+		checkResponse       func(recoder *httptest.ResponseRecorder)
+		testRequestModifier func(req *http.Request)
 	}{
 		{
 			name: "OK",
@@ -289,6 +291,56 @@ func TestListAccountAPI(t *testing.T) {
 			checkResponse: func(recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusOK, recorder.Code)
 				requireBodyMatchAccounts(t, recorder.Body, accounts)
+			},
+		},
+		{
+			name: "NotFound",
+			query: Query{
+
+				PageID:   1,
+				PageSize: n,
+			},
+
+			buildStubs: func(store *mockdb.MockStore) {
+				args := db.ListAccountsParams{
+					Limit:  int32(n),
+					Offset: 0,
+				}
+
+				store.EXPECT().
+					ListAccounts(gomock.Any(), gomock.Eq(args)).
+					Times(1).
+					Return(accounts, db.ErrRecordNotFound)
+			},
+			checkResponse: func(recorder *httptest.ResponseRecorder) {
+				require.Equal(t, http.StatusInternalServerError, recorder.Code)
+
+			},
+		},
+		{
+			name: "CouldNotBindJSON",
+			query: Query{
+
+				PageID:   1,
+				PageSize: n,
+			},
+
+			buildStubs: func(store *mockdb.MockStore) {
+				store.EXPECT().
+					ListAccounts(gomock.Any(), gomock.Any()).
+					Times(0)
+			},
+
+			// Modify the request to have invalid query parameters
+			testRequestModifier: func(req *http.Request) {
+				q := req.URL.Query()
+				q.Set("page_id", "abc")   // Invalid: should be an integer
+				q.Set("page_size", "def") // Invalid: should be an integer
+				req.URL.RawQuery = q.Encode()
+			},
+
+			checkResponse: func(recorder *httptest.ResponseRecorder) {
+				require.Equal(t, http.StatusBadRequest, recorder.Code)
 			},
 		},
 	}
@@ -318,6 +370,10 @@ func TestListAccountAPI(t *testing.T) {
 			url := "/accounts"
 
 			request, err := http.NewRequest(http.MethodGet, url, nil)
+
+			if tc.testRequestModifier != nil {
+				tc.testRequestModifier(request)
+			}
 
 			q := request.URL.Query()
 
